@@ -1,4 +1,6 @@
-# Recovery Device Tree for Samsung Galaxy A24 (a24)
+# Recovery Device Tree for Samsung Galaxy A24 4G (a24)
+The Galaxy A24 4G is a budget range smartphone from Samsung, Released 2023, Aptil 9. This project is licensed under the terms of the GNU GPLv3
+
 ## Device spefication (briefly)
 |Basic               |Spec Sheet                                                    |
 |--                  |--                                                            |
