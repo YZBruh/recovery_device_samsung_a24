@@ -1,0 +1,52 @@
+# mount point       fstype    device                                                           flags
+
+# Main partitions
+/system_image      erofs       	logical            flags=display="System-(Image)";backup=1;flashimg=1;slotselect
+/vendor_image      erofs       	logical            flags=display="Vendor-(Image)";backup=1;flashimg=1;slotselect
+/product_image     erofs         logical            flags=display="Product-(Image)";backup=1;flashimg=1;slotselect
+/system_ext_image  erofs       	logical 	         	flags=display="System_EXT-(Image)";backup=1;flashimg=1;slotselect
+
+## Firmware
+/boot              emmc        /dev/block/by-name/boot             flags=display="Boot";slotselect;backup=1;flashimg=1
+/vendor_boot       emmc        /dev/block/by-name/vendor_boot             flags=display="Vendor_Boot";slotselect;backup=1;flashimg=1
+/recovery          emmc        /dev/block/by-name/recovery         flags=display="Recovery";slotselect;backup=1;flashimg=1
+/misc              emmc        /dev/block/by-name/misc             flags=display="MİSC";backup=1;flashimg=1
+/logo	             emmc	       /dev/block/by-name/logo	           flags=display="Logo";slotselect;backup=1
+/dtbo			         emmc	       /dev/block/by-name/dtbo	           flags=display="DTBO";slotselect;backup=1;flashimg=1
+/vbmeta_vendor	   emmc        /dev/block/by-name/vbmeta_vendor    flags=display="VBMetaeta_vendor";slotselect;backup=1;flashimg=1
+/vbmeta_system     emmc        /dev/block/by-name/vbmeta_system    flags=display="VBMeta_system";slotselect;backup=1;flashimg=1
+
+## Sensitive data
+/tee1		           emmc	       /dev/block/by-name/tee1	           flags=display="TEE1";backup=1
+/tee2		           emmc	       /dev/block/by-name/tee2	           flags=display="TEE2";backup=1
+/scp1		           emmc	       /dev/block/by-name/scp1	           flags=display="SCP1";backup=1
+/scp2		           emmc	       /dev/block/by-name/scp2	           flags=display="SCP2";backup=1
+/sspm_1		         emmc	       /dev/block/by-name/sspm_1	         flags=display="SSPM1";backup=1
+/sspm_2		         emmc	       /dev/block/by-name/sspm_2	         flags=display="SSPM_2";backup=1
+/md1img		         emmc	       /dev/block/by-name/md1img	         flags=display="MD1İMG";backup=1
+/md3img		         emmc	       /dev/block/by-name/md3img	         flags=display="MD3İMG";backup=1
+/md1dsp		         emmc	       /dev/block/by-name/md1dsp	         flags=display="MD1DSP";backup=1
+/md1arm7		     emmc	       /dev/block/by-name/md1arm7	         flags=display="MD1ARM7";backup=1
+/gz1		           emmc	       /dev/block/by-name/gz1	             flags=display="GZ1";backup=1
+/gz2		           emmc	       /dev/block/by-name/gz2	             flags=display="GZ2";backup=1
+/spmfw		         emmc	       /dev/block/by-name/spmfw	           flags=display="SPMFW";backup=1
+/boot_para	       emmc	       /dev/block/by-name/boot_para	       flags=display="BOOT_PARA";backup=1;flashimg=1
+/otp               emmc        /dev/block/by-name/otp              flags=display="OTP";backup=1
+/cust              ext4        /dev/block/by-name/cust             flags=display="CUST";backup=1;flashimg=1
+/mcupm_1		   emmc	       /dev/block/by-name/mcupm_1	         flags=display="MCUPM_1";backup=1
+/mcupm_2		   emmc	       /dev/block/by-name/mcupm_2	         flags=display="MCUPM_2";backup=1
+/tzar		       emmc	       /dev/block/by-name/tzar	         flags=display="TZAR";backup=1
+/uh                emmc        /dev/block/by-name/uh               flags=display="UH";backup=1;flashimg=1
+/pi_img            emmc        /dev/block/by-name/pi_img           flags=display="Pİ_İMG";backup=1;flashimg=1
+/optics            ext4        /dev/block/by-name/optics             flags=display="Optics";backup=1;flashimg=1
+/prism             ext4        /dev/block/by-name/prism              flags=display="Prism";backup=1;flashimg=1
+/nvdata             ext4        /dev/block/by-name/nvdata              flags=display="NVDATA";backup=1;flashimg=1
+/nvcfg             ext4         /dev/block/by-name/nvcfg               flags=display="NVCFG";backup=1;flashimg=1
+/apusys1             emmc         /dev/block/by-name/apusys1               flags=display="APUSYS1";backup=1
+/apusys2             emmc         /dev/block/by-name/apusys2               flags=display="APUSYS2";backup=1
+/mvpu_algo1             emmc         /dev/block/by-name/mvpu_algo1               flags=display="MVPU_ALGO1";backup=1
+/mvpu_algo2             emmc         /dev/block/by-name/mvpu_algo2               flags=display="MVPU_ALGO2";backup=1
+
+# Removable storage
+/external_sd       vfat      /dev/block/mmcblk1p1    /dev/block/mmcblk1                flags=display="MicroSD Card";storage;wipeingui;removable;fsflags="utf8"
+/usb-otg           vfat      /dev/block/sda1         /dev/block/sda                    flags=display="USB-Storage";storage;wipeingui;removable;fsflags="utf8"

@@ -1,0 +1,11 @@
+# fstab
+system                                     /system          erofs               ro wait,slotselect,logical
+system_ext                                 /system_ext      erofs               ro wait,slotselect,logical
+vendor                                     /vendor          erofs               ro wait,slotselect,logical
+product                                    /product         erofs               ro wait,slotselect,logical
+
+/dev/block/platform/bootdevice/by-name/metadata     /metadata        ext4                noatime,nosuid,nodev,discard wait,check,formattable
+
+/dev/block/platform/bootdevice/by-name/userdata     /data            f2fs                noatime,nosuid,nodev,discard,flush_merge,reserve_root=134217,resgid=1065,alloc_mode=reuse,fsync_mode=nobarrier,inlinecrypt wait,check,formattable,quota,latemount,resize,reservedsize=128m,checkpoint=fs,fileencryption=aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized,keydirectory=/metadata/vold/metadata_encryption,fsverity
+
+/dev/block/platform/bootdevice/by-name/misc         /misc            emmc                defaults       defaults

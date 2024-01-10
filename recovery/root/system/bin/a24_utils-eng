@@ -1,0 +1,403 @@
+#!/sbin/sh
+# a24_utils-eng by YZBruh
+# DO NOT EDİT OR MODİFY FİLE. SEND BUGS.
+
+## Variables...
+DIR=$(pwd)
+FSTAB_DIR="/first_stage_ramdisk"
+VETC="/vendor/etc"
+VERS="1.0.0"
+
+##
+
+## Custom messages
+case $1 in
+   -v|--version)
+     echo "$VERS"
+     exit
+   ;;
+   -a|--author)
+     echo "YZBruh"
+     exit
+   ;;
+   -r|--report)
+     echo "For errors and complaints, contact YZBruh via telegram."
+     echo "If detailed information and log are not provided, no help will be provided."
+     exit
+   ;;
+   -d|--decrypt)
+     STAT="1"
+   ;;
+   -h|--help)
+     echo "Just type a24_utils-eng in the terminal and run it!"
+     echo "Don't forget to enter the answer in the approval sections after typing it."
+     echo "Options; "
+     echo "   Version info:      -v OR --version"
+     echo "   Script author:     -a OR --author"
+     echo "   Report:             -r OR --report"
+     echo " "
+     exit
+esac
+
+## Functions
+cleanup() {
+    unset DIR FSTAB_DIR VETC VERS MOUNT_STAT BFS_PASS PASS OPT BACKUP_DIR DIR_NAME DIRX IME_OPT cleanup unencrypt dd_backup imei_backup imei_reload imei_menu ime_re rom resize wiper part reload_rom reload file parts part_file part_name parts n_name select_lang
+}
+
+unencrypt() {
+echo "Checking encryption state..."
+sleep 3
+if [ -d /data/media ]; then
+   echo "Encryption already disabled."
+   cleanup
+   exit
+else
+   echo "Device encrypted!"
+   sleep 3
+   echo "IF THIS PROCESS IS SUCCESSFUL, ALL DATA ON THE DEVICE WILL BE DELETED. DO YOU STILL WANT TO CONTINUE? (if you want y, type n if you don't want y)"
+   read PASS
+   case $PASS in
+      n)
+        echo "Canceled."
+        cleanup
+        exit
+      ;;
+      y)
+        echo "Starting..."
+        sleep 3
+   esac
+   echo "Did you mount the vendor partition? If you have done y, write n if you have not done y."
+   read MOUNT_STAT
+   if [ "$MOUNT_STAT" == "y" ]; then
+      echo "The vendor is being re-mounted as RW......"
+      mount -o remount,rw /vendor
+      if [ "$?" == "0" ]; then
+         cd /
+      else
+         umount /vendor
+         mount -o rw /vendor
+      fi
+   else
+      sleep 3
+      echo "Mounting vendor..."
+      sleep 3
+      mount -o rw /vendor
+      if [ "$?" == "0" ]; then
+         cd /
+      else
+         echo "FAILED"
+         cleanup
+         exit
+      fi
+   fi
+   sleep 3
+   echo "Erasing fstab.mt6789..."
+   rm -rf $VETC/fstab.mt6789
+   if [ "$?" == "0" ]; then
+      echo "Erasing fstab.emmc..."
+      sleep 3
+      rm -rf $VETC/fstab.emmc
+      if [ "$?" == "0" ]; then
+         echo "FAILED!"
+         echo "PLEASE FLASH STOCK VENDOR İMAGE!"
+         cleanup
+         exit
+      else
+         cd /
+      fi
+   else
+      echo "FAILED!"
+      cleanup
+   fi
+   sleep 3
+   echo "Copying new fstab files..."
+   chmod -R 777 $FSTAB_DIR
+   cp $FSTAB_DIR/fstab.mt6789 $VETC
+   if [ "$?" == "0" ]; then
+      echo "FAILED!"
+      echo "PLEASE FLASH STOCK VENDOR İMAGE"
+      cleanup
+      exit
+   else
+      cp $FSTAB_DIR/fstab.emmc $VETC
+      if [ "$?" == "0" ]; then
+         sleep 3
+         echo "Formatting device..."
+         sleep 3
+         echo "Data and cache cleaning..."
+      else
+         echo "FAILED!"
+         echo "PLEASE FLASH STOCK VENDOR İMAGE"
+         cleanup
+         exit
+      fi
+   fi
+   twrp wipe data
+   if [ "$?" == "0" ]; then
+      sleep 3
+      twrp wipe cache
+      if [ "$?" == "0" ]; then
+         sleep 3
+         echo "Formatting completed."
+      else
+         echo "FORMATTİNG FAILED (Cache)!"
+         echo "Try cleaning yourself. If you don't reset, the device's encryption cannot be resolved."
+      fi
+   else
+      echo "FORMATTİNG FAILED (Data)!"
+      echo "Try cleaning yourself. If you don't reset, the device's encryption cannot be resolved."
+   fi
+   if [ "$MOUNT_STAT" == "y" ]; then
+      sleep
+      echo "Unmounting vendor..."
+      umount /vendor
+      if [ "$?" == "0" ]; then
+         cd /
+      else
+         echo "FAILED TO UNMOUNT VENDOR!"
+         echo "Try doing it manually yourself."
+      fi
+   fi
+   sleep 3
+   echo "All works completed!"
+   echo "SUCCESSFUL!"
+   cleanup
+   exit
+fi
+}
+
+# ROM backupper fuction
+dd_backup() {
+    BACKUP_DIR="A24_DD_BACKUP_"$(date +%s)""
+    DIR_NAME=$BACKUP_DIR
+    echo "Generating dir's..."
+    echo "NOTE: DON'T BACKUP USERDATA."
+    mkdir /sdcard/$BACKUP_DIR
+    unset BACKUP_DIR
+    sleep 3
+    echo "Partitions to be backed up;"
+    ls /dev/block/platform/bootdevice/by-name
+    sleep 3
+    echo "Backupping... (It may take too long)."
+    cp /dev/block/by-name/* /sdcard/$DIR_NAME
+    if [ "$?" == "0" ]; then
+       cd /sdcard/$DIR_NAME
+    else
+       echo "FAILED!"
+       rm -rf /sdcard/$DIR_NAME
+       cleanup
+       exit
+    fi
+    for file in "/sdcard/$DIR_NAME"/*; do
+        mv "$file" "${file}.img"
+    done
+    if [ "$?" == "0" ]; then
+       cd /sdcard/$DIR_NAME
+    else
+       echo "FAILED!"
+       rm -rf /sdcard/$DIR_NAME
+       cleanup
+       exit
+    fi
+    sleep 3
+    echo "SUCCESSFUL!"
+    echo "Dir: /sdcard/$DIR_NAME"
+}
+
+# IMEI backupper function
+imei_backup() {
+    BACKUP_DIR="A24_IMEI_BACKUP_"$(date +%s)""
+    DIR_NAME=$BACKUP_DIR
+    echo "Generating dir's..."
+    mkdir /sdcard/$BACKUP_DIR
+    unset BACKUP_DIR
+    sleep 3
+    echo "Backupping IMEI..."
+    ime=$(dd if=/dev/block/by-name/efs of=/sdcard/$DIR_NAME/efs.img && dd if=/dev/block/by-name/nvcfg of=/sdcard/$DIR_NAME/nvcfg.img && dd if=/dev/block/by-name/nvdata of=/sdcard/$DIR_NAME/nvdata.img && dd if=/dev/block/by-name/frp of=/sdcard/$DIR_NAME/frp.img && dd if=/dev/block/by-name/protect1 of=/sdcard/$DIR_NAME/protect1.img && dd if=/dev/block/by-name/protect2 of=/sdcard/$DIR_NAME/protect2.img)
+    if [ "$?" == "0" ]; then
+       sleep 3
+       echo "SUCCESSFUL!"
+       echo "Dir: /sdcard/$DIR_NAME"
+       cleanup
+       exit
+    else
+       echo "FAILED!"
+       rm -rf /sdcard/$DIR_NAME
+       cleanup
+       exit
+    fi
+}
+
+# IMEI restorer function
+imei_reload() {
+    echo "Type the folder where the backup is located."
+    read DIRX
+    if [ -d "$DIRX" ]; then
+       cd $DIRX
+       echo "Restoring..."
+       sleep 3
+    else
+       echo "Not found backup folder!"
+       cleanup
+       exit 1
+    fi
+    ime_re=$(dd if=efs.img of=/dev/block/by-name/efs && dd if=nvcfg.img of=/dev/block/by-name/nvcfg && dd if=nvdata.img of=/dev/block/by-name/nvdata && dd if=frp.img of=/dev/block/by-name/frp && dd if=protect1.img of=/dev/block/by-name/protect1 && dd if=protect2.img of=/dev/block/by-name/protect2)
+    if [ "$?" == "0" ]; then
+       sleep 3
+       echo "SUCCESSFUL!"
+       cleanup
+       exit
+    else
+       echo "FAILED!"
+       cleanup
+       exit 1
+    fi
+}
+
+# ROM restorer function
+reload_rom() {
+    echo "Partitions to be restored: "
+    ls /dev/block/by-name
+    echo "Type the folder where the backup is located."
+    read DIRX
+    if [ -d "$DIRX" ]; then
+       cd $DIRX
+       echo "Restoring..."
+       sleep 3
+    else
+       echo "Not found backup folder!"
+       cleanup
+       exit 1
+    fi
+    files=($DIRX/*.img)
+    for file in "${files[@]}" do
+        n_name="${file%.img}"
+        mv "$file" "$n_name"
+    done
+    parts=($DIRX/*)
+    for part_file in "${parts[@]}" do
+        part_name=$(basename "$part_file")
+        dd if="$part_file" of="/dev/block/by-name/$part_name"
+    done
+    if [ "$?" == "0" ]; then
+       sleep 3
+       echo "SUCCESSFUL!"
+       cleanup
+       exit
+    else
+       echo "FAILED!"
+       cleanup
+       exit 1
+    fi
+    for file in "/sdcard/$DIRX"/*; do
+        mv "$file" "${file}.img"
+    done
+}
+
+# Wiper function
+wiper() {
+    echo "Partition list; "
+    ls /dev/block/by-name
+    sleep 3
+    echo "Type the name of the section you want to clean (in lowercase letters)."
+    read part
+    if [ -f /dev/block/by-name/$part ]; then
+       twrp wipe $part
+    else
+       sleep 2
+       echo "Partition not found!"
+       exit 1
+    fi
+}
+
+# IMEI processes
+imei_menu() {
+    clear
+    echo "___________________________________"
+    echo "|         IMEI Operations         |"
+    echo "|_________________________________|"
+    echo "| Seçenekler;                     |"
+    echo "|   [1] Backup IMEI               |"
+    echo "|   [2] Restore IMEI backup       |"
+    echo "|   [3] Exit                      |"
+    echo "|_________________________________|"
+    echo "Please select an option (by entering the number): "
+    read IME_OPT
+    case $IME_OPT in
+       1)
+         imei_backup
+       ;;
+       2)
+         imei_reload
+       ;;
+       3)
+         cleanup
+         exit
+       ;;
+       *)
+         echo "İnvalid option!"
+         cleanup
+         exit 1
+    esac
+}
+
+# Classic menu...
+menu() {
+    clear
+    if [ "$STAT" == "1" ]; then
+       unencrypt
+       exit
+    fi
+    echo "___________________________________"
+    echo "|  Samsung Galaxy A24 TWRP utils  |"
+    echo "|            By YZBruh            |"
+    echo "|_________________________________|"
+    echo "| Seçenekler;                     |"
+    echo "|   [1] Decrypt                   |"
+    echo "|   [2] Backup ROM with DD        |"
+    echo "|   [3] Restore ROM backup        |"
+    echo "|   [4] IMEI operation            |"
+    echo "|   [5] Wiper                     |"
+    echo "|   [6] Version                   |"
+    echo "|   [7] Exit                      |"
+    echo "|_________________________________|"
+    echo "Please select an option (by entering the number): "
+    read OPT
+    case $OPT in
+       1)
+         unencrypt
+       ;;
+       2)
+         dd_backup
+       ;;
+       3)
+         reload_rom
+       ;;
+       4)
+         imei_menu
+       ;;
+       5)
+         wiper
+       ;;
+       6)
+         echo "$VERS"
+       ;;
+       7)
+         cleanup
+         exit
+       ;;
+       *)
+         echo "İnvalid option!"
+         cleanup
+         exit 1
+    esac
+}
+
+##
+
+## Starter
+menu
+
+##
+
+# end of script
