@@ -1,10 +1,10 @@
 # mount point       fstype    device                                                           flags
 
 # Main partitions
-/system_image      erofs       	logical            flags=display="System-(Image)";backup=1;flashimg=1;slotselect
-/vendor_image      erofs       	logical            flags=display="Vendor-(Image)";backup=1;flashimg=1;slotselect
-/product_image     erofs         logical            flags=display="Product-(Image)";backup=1;flashimg=1;slotselect
-/system_ext_image  erofs       	logical 	         	flags=display="System_EXT-(Image)";backup=1;flashimg=1;slotselect
+/system_image      erofs       	system              flags=display="System-(Image)";backup=1;flashimg=1;logical;slotselect
+/vendor_image      erofs       	vendor              flags=display="Vendor-(Image)";backup=1;flashimg=1;logical;slotselect
+/product_image     erofs        product             flags=display="Product-(Image)";backup=1;flashimg=1;logical;slotselect
+/system_ext_image  erofs       	system_ext 	       	flags=display="System_EXT-(Image)";backup=1;flashimg=1;logical;slotselect
 
 ## Firmware
 /boot              emmc        /dev/block/by-name/boot             flags=display="Boot";slotselect;backup=1;flashimg=1
