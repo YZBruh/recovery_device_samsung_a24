@@ -76,6 +76,11 @@ else
       else
          umount /vendor
          mount -o rw /vendor
+         if [ "$?" == "0" ]; then
+            cd /
+         else
+            echo "BAŞARISIZ!"
+         fi
       fi
    else
       sleep 3
@@ -149,6 +154,7 @@ else
    fi
    if [ "$MOUNT_STAT" == "y" ]; then
       echo "Vendor bağlantısı kapatılıyor..."
+      mount -o remount,ro /vendor
       umount /vendor
       if [ "$?" == "0" ]; then
          cd /
