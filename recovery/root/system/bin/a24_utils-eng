@@ -34,7 +34,7 @@ case $1 in
      echo "Options; "
      echo "   Version info:      -v OR --version"
      echo "   Script author:     -a OR --author"
-     echo "   Report:             -r OR --report"
+     echo "   Report:            -r OR --report"
      echo " "
      exit
 esac
@@ -76,6 +76,11 @@ else
       else
          umount /vendor
          mount -o rw /vendor
+         if [ "$?" == "0" ]; then
+            cd /
+         else
+            echo "FAILED!"
+         fi
       fi
    else
       sleep 3
@@ -150,6 +155,7 @@ else
    if [ "$MOUNT_STAT" == "y" ]; then
       sleep
       echo "Unmounting vendor..."
+      mount -o remount,ro /vendor
       umount /vendor
       if [ "$?" == "0" ]; then
          cd /
