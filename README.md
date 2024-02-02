@@ -47,16 +47,5 @@ Minor checks
 - [ ] screenshot
 - [ ] partition SD card
 
-## About encryption
-This device has encryption. But solving this is quite difficult. Samsung is not good at this. We need a special kernel. And it's not possible yet. That's why I wrote 2 scripts for this. Turkish English: one of them is a24_utils-eng (in english language) and the other one is a24_utils-tr (in Turkish language). Execute the command according to your language. Examples;
-
-```
-# Opening the menu (English)
-a24_utils-eng
-
-# Help (English)
-a24_utils-eng -h OR --help
-```
-
 ### Device picture
 ![Samsung Galaxy A24 4G](https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-a24-4g-7.jpg)
