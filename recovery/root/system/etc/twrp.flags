@@ -2,6 +2,7 @@
 
 # Main partitions
 /system_image      emmc       	system              flags=display="System-(Image)";backup=1;flashimg=1;logical;slotselect
+/system_ext_image  emmc       	system_ext          flags=display="System_EXT-(Image)";backup=1;flashimg=1;logical;slotselect
 /vendor_image      emmc       	vendor              flags=display="Vendor-(Image)";backup=1;flashimg=1;logical;slotselect
 /product_image     emmc         product             flags=display="Product-(Image)";backup=1;flashimg=1;logical;slotselect
 
