@@ -69,6 +69,7 @@ BOARD_MKBOOTIMG_ARGS += \
         --ramdisk_offset $(BOARD_RAMDISK_OFFSET) \
         --tags_offset $(BOARD_KERNEL_TAGS_OFFSET) \
         --dtb $(TARGET_PREBUILT_DTB)
+TARGET_FORCE_PREBUILT_KERNEL := true
 BOARD_KERNEL_IMAGE_NAME := Image
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/kernel
 TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilt/dtb.img
