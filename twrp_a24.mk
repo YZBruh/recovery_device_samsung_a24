@@ -21,7 +21,7 @@ PRODUCT_PACKAGES += \
 ## Device identifier. This must come after all inclusions
 PRODUCT_NAME := twrp_a24
 PRODUCT_DEVICE := a24
-PRODUCT_MODEL := SM-A245M
+PRODUCT_MODEL := SM-A245F
 PRODUCT_RELEASE_NAME := Samsung Galaxy A24
 PRODUCT_BRAND := samsung
 PRODUCT_MANUFACTURER := samsung
